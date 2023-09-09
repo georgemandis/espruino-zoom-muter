@@ -11,6 +11,7 @@
  */
 
 const kb = require("ble_hid_keyboard");
+let ledOn = false;
 
 // Set the name for our Zoom Mute Button
 NRF.setAdvertising({}, { name: "Zoom Mute Toggle" });
@@ -18,7 +19,7 @@ NRF.setAdvertising({}, { name: "Zoom Mute Toggle" });
 // Advertising the HID service so it's recognized as a BLE keyboard
 NRF.setServices(undefined, { hid: kb.report });
 
-function sendKB(ledOn) {
+function sendKB() {
   kb.tap(kb.KEY.A, kb.MODIFY.SHIFT + kb.MODIFY.GUI, function () {
     ledOn ? LED3.set() : LED3.reset();
     console.log("Pressing GUI+Shift+A");
@@ -27,15 +28,9 @@ function sendKB(ledOn) {
 
 setWatch(
   function () {
-    sendKB(true);
+    ledOn = !ledOn
+    sendKB();
   },
   BTN,
-  { edge: "rising", debounce: 150, repeat: true }
-);
-setWatch(
-  function () {
-    sendKB(false);
-  },
-  BTN,
-  { edge: "falling", debounce: 150, repeat: true }
+  { edge: "both", debounce: 50, repeat: true }
 );
