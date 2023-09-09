@@ -20,14 +20,9 @@ NRF.setServices(undefined, { hid: kb.report });
 
 function sendKB(ledOn) {
   kb.tap(kb.KEY.A, kb.MODIFY.SHIFT + kb.MODIFY.GUI, function () {
+    ledOn ? LED3.set() : LED3.reset();
     console.log("Pressing GUI+Shift+A");
-  });
-
-  if (ledOn) {
-    LED3.set();
-  } else {
-    LED3.reset();
-  }
+  });  
 }
 
 setWatch(
@@ -35,12 +30,12 @@ setWatch(
     sendKB(true);
   },
   BTN,
-  { edge: "rising", debounce: 50, repeat: true }
+  { edge: "rising", debounce: 150, repeat: true }
 );
 setWatch(
   function () {
     sendKB(false);
   },
   BTN,
-  { edge: "falling", debounce: 50, repeat: true }
+  { edge: "falling", debounce: 150, repeat: true }
 );
